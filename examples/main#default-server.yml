@@ -1,0 +1,5 @@
+host: 0.0.0.0
+connections:
+    -
+        from: https://dev1.example.com
+        to: http://localhost:8080

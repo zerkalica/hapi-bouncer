@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+var path = require('path')
+var os = require('os')
+var exec = require('child_process').exec
+var yargs = require('yargs')
+
+var args = yargs
+    .usage('Usage: $0 --config=path --certs=path --binded --verbose')
+    .alias('c', 'config')
+    .alias('v', 'verbose')
+    .alias('r', 'certs')
+    .alias('b', 'binded')
+    .example('$0 --config=app --certs=app/ssl')
+//     .example('Where #main#default-server.yaml:\n' +
+// 'host: 0.0.0.0\n' +
+// 'connections:\n' +
+// '    -\n' +
+// '        from: https://dev1.example.com\n' +
+// '        to: http://localhost:8080\n'
+// )
+    .boolean('binded')
+    .default('certs', process.cwd)
+    .help('h')
+    .alias('h', 'help')
+    .describe('verbose', 'Verbose output')
+    .describe('binded', 'Do not try to load authbind')
+    .describe('config', 'Path to yaml or json config files')
+    .describe('certs', 'Path to ssl certificates: server.crt, server.key, ca.crt')
+    .argv
+
+// console.log(args)
+
+if (args.verbose) {
+    process.env.DEBUG = 'hapi-bouncer:*'
+}
+
+if (args.binded || os.type() === 'Windows_NT') {
+    require('../dist/bouncerServer.js').default(args)
+    return
+}
+
+var spawnArgs = ['authbind', '--deep', __filename, '--binded'].concat(process.argv.slice(2))
+// console.log(spawnArgs)
+var proc = exec(spawnArgs.join(' '), (error) => {
+    if (error.code === 'ENOENT') {
+        console.error('For Linux and MacOS need install authbind to access 80 and 443 ports:\n' +
+'sudo apt-get install authbind\n' +
+'sudo touch /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
+'sudo chown $USER /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
+'sudo chmod 755 /etc/authbind/byport/80 /etc/authbind/byport/443\n'
+)
+        return
+    }
+
+    console.error(error)
+})
+
+proc.stdout.on('data', (data) => console.log(data))
+proc.stderr.on('data', (data) => console.error(data))
