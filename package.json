@@ -40,6 +40,7 @@
     "README.md",
     "LICENSE",
     "src",
+    "bin",
     "flow-typed",
     "dist"
   ],
@@ -51,7 +52,7 @@
     "node-config-loader": "^2.1.0",
     "find-root": "^1.0.0",
     "h2o2": "^5.1.1",
-    "hapi": ">= ^14.0.0",
+    "hapi": "^14.0.0 || ^15.0.0",
     "inert": "^4.0.2",
     "vision": "^4.1.0",
     "wreck": "^10.0.0"
