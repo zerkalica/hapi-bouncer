@@ -69,12 +69,12 @@ export default function createProxyHandler(
                     ...payloadRec,
                     payload: (payload || '').substring(0, 300)
                 }, null, '  '))
-                cb(null, newUrl, newHeaders)
             })
             .catch((e: Error) => {
                 debugErr('error: %o', e)
-                cb(null, newUrl, newHeaders)
+                // cb(null, newUrl, newHeaders)
             })
+        cb(null, newUrl, newHeaders)
     }
 
     return {

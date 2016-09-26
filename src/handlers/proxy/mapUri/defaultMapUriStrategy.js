@@ -12,7 +12,7 @@ export default function defaultMapUriStrategy(
     return {
         protocol: to.protocol,
         hostname: to.hostname,
-        port: String(to.port),
+        port: to.port ? String(to.port) : '',
         query,
         pathname: pathname || ''
     }

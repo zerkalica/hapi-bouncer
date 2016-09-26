@@ -14,7 +14,7 @@
   },
   "scripts": {
     "prepublish": "conf/resources/prepublish.sh",
-    "preversion": "conf/resources/checkgit.sh && npm test",
+    "preversion": "conf/resources/checkgit.sh && npm test && npm run build",
     "postversion": "git push && git push --tags",
     "clean": "rm -rf $npm_package_config_builddir",
     "ver": "conf/resources/gen-version.sh",
