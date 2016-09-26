@@ -2,7 +2,7 @@
 
 var path = require('path')
 var os = require('os')
-var exec = require('child_process').exec
+var spawn = require('child_process').spawn
 var yargs = require('yargs')
 
 var args = yargs
@@ -40,21 +40,18 @@ if (args.binded || os.type() === 'Windows_NT') {
     return
 }
 
-var spawnArgs = ['authbind', '--deep', __filename, '--binded'].concat(process.argv.slice(2))
-// console.log(spawnArgs)
-var proc = exec(spawnArgs.join(' '), {maxBuffer: 1024 * 1024}, (error) => {
-    if (error.code === 'ENOENT') {
-        console.error('For Linux and MacOS need install authbind to access 80 and 443 ports:\n' +
-'sudo apt-get install authbind\n' +
-'sudo touch /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
-'sudo chown $USER /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
-'sudo chmod 755 /etc/authbind/byport/80 /etc/authbind/byport/443\n'
-)
-        return
-    }
+var spawnArgs = ['--deep', __filename, '--binded'].concat(process.argv.slice(2))
 
-    console.error(error)
+var child = spawn('authbind', spawnArgs)
+
+child.on('error', (err) => {
+    console.error('For Linux and MacOS need install authbind to access 80 and 443 ports:\n' +
+        'sudo apt-get install authbind\n' +
+        'sudo touch /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
+        'sudo chown $USER /etc/authbind/byport/80 /etc/authbind/byport/443\n' +
+        'sudo chmod 755 /etc/authbind/byport/80 /etc/authbind/byport/443\n'
+    , '\n', err)
 })
 
-proc.stdout.on('data', (data) => console.log(data))
-proc.stderr.on('data', (data) => console.error(data))
+child.stdout.on('data', (data) => console.log(data.toString()))
+child.stderr.on('data', (data) => console.error(data. toString()))
