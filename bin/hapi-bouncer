@@ -42,7 +42,7 @@ if (args.binded || os.type() === 'Windows_NT') {
 
 var spawnArgs = ['authbind', '--deep', __filename, '--binded'].concat(process.argv.slice(2))
 // console.log(spawnArgs)
-var proc = exec(spawnArgs.join(' '), (error) => {
+var proc = exec(spawnArgs.join(' '), {maxBuffer: 1024 * 1024}, (error) => {
     if (error.code === 'ENOENT') {
         console.error('For Linux and MacOS need install authbind to access 80 and 443 ports:\n' +
 'sudo apt-get install authbind\n' +
