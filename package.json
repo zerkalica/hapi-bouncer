@@ -1,6 +1,6 @@
 {
   "name": "hapi-bouncer",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "hapi bouncer proxy",
   "repository": {
     "type": "git",
