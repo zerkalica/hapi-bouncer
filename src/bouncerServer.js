@@ -4,7 +4,7 @@ import __debug from 'debug'
 
 import fs from 'fs'
 import path from 'path'
-import loader from 'node-config-loader'
+import {loadConfig} from 'node-config-loader'
 
 import createServer from './createServer'
 import normalizeConnections from './utils/normalizeConnections'
@@ -46,7 +46,7 @@ export default function bouncerServer(args: {[id: string]: any}) {
     args.config && configRoots.add(args.config)
     process.env.HOME && configRoots.add(path.join(process.env.HOME, '.config', 'hapi-bouncer'))
     debug('config dirs: %o', configRoots.roots)
-    loader({
+    loadConfig({
         mask: configRoots.roots,
         env: process.env.NODE_ENV,
         instance: 'server'
