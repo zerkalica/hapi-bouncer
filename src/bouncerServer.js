@@ -21,7 +21,7 @@ function normalizeMask(configsGlob: string): ?string {
     } catch (e) {}
 
     if (isDir) {
-        result = configsGlob + '/**/*.{json,yml,yaml}'
+        result = configsGlob + '/**/*.{json,yml,yaml,toml}'
     }
 
     return result
@@ -41,11 +41,16 @@ class ConfigRoots {
     }
 }
 
-export default function bouncerServer(args: {[id: string]: any}): Promise<HapiServer> {
-    const configRoots = new ConfigRoots()
+export interface BouncerServerConfig {
+    config: string[];
+    certs: string;
+}
 
-    args.config && configRoots.add(args.config)
+export default function bouncerServer(args: BouncerServerConfig): Promise<HapiServer> {
+    const configRoots = new ConfigRoots()
+    const config: string[] = args.config || []
     process.env.HOME && configRoots.add(path.join(process.env.HOME, '.config', 'hapi-bouncer'))
+    config.forEach(conf => configRoots.add(conf))
     debug('config dirs: %o', configRoots.roots)
 
     return loadConfig({
@@ -57,10 +62,7 @@ export default function bouncerServer(args: {[id: string]: any}): Promise<HapiSe
             debug('raw config: %s', JSON.stringify(conf, null, '  '))
             const config: NormalizedConfig = normalizeConnections(
                 args.certs,
-                ({
-                    ...conf,
-                    ...args.app
-                }: RawConfig)
+                conf
             )
             // debug('normalized config: %s', JSON.stringify(config, null, '  '))
             const server = createServer(config)

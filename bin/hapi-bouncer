@@ -5,8 +5,8 @@ var os = require('os')
 var spawn = require('child_process').spawn
 var yargs = require('yargs')
 
-var args = yargs
-    .usage('Usage: $0 --config=path --certs=path --binded --verbose')
+var argsBuilder = yargs
+    .usage('$0 --config=path1 --config=path2 --certs=path --binded --verbose')
     .alias('c', 'config')
     .alias('v', 'verbose')
     .alias('r', 'certs')
@@ -20,6 +20,7 @@ var args = yargs
 // '        to: http://localhost:8080\n'
 // )
     .boolean('binded')
+    .array('config')
     .default('certs', process.cwd)
     .help('h')
     .alias('h', 'help')
@@ -27,7 +28,15 @@ var args = yargs
     .describe('binded', 'Do not try to load authbind')
     .describe('config', 'Path to yaml or json config files')
     .describe('certs', 'Path to ssl certificates: server.crt, server.key, ca.crt')
-    .argv
+    .epilog('For more information see https://github.com/zerkalica/hapi-bouncer')
+
+const args = argsBuilder.argv
+
+if (!args.config || !args.config.length) {
+    argsBuilder.showHelp()
+    process.exit(0)
+    return
+}
 
 // console.log(args)
 
@@ -59,4 +68,4 @@ child.on('error', (err) => {
 })
 
 child.stdout.on('data', (data) => console.log(data.toString()))
-child.stderr.on('data', (data) => console.error(data. toString()))
+child.stderr.on('data', (data) => console.error(data.toString()))
