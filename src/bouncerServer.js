@@ -9,6 +9,7 @@ import {loadConfig} from 'node-config-loader'
 import createServer from './createServer'
 import normalizeConnections from './utils/normalizeConnections'
 import type {RawConfig, NormalizedConfig} from './interfaces/bouncer'
+import type {HapiServer} from './interfaces/hapi'
 
 const debug = __debug('hapi-bouncer:debug')
 
@@ -40,13 +41,14 @@ class ConfigRoots {
     }
 }
 
-export default function bouncerServer(args: {[id: string]: any}) {
+export default function bouncerServer(args: {[id: string]: any}): Promise<HapiServer> {
     const configRoots = new ConfigRoots()
 
     args.config && configRoots.add(args.config)
     process.env.HOME && configRoots.add(path.join(process.env.HOME, '.config', 'hapi-bouncer'))
     debug('config dirs: %o', configRoots.roots)
-    loadConfig({
+
+    return loadConfig({
         mask: configRoots.roots,
         env: process.env.NODE_ENV,
         instance: 'server'
@@ -68,9 +70,6 @@ export default function bouncerServer(args: {[id: string]: any}) {
                 }
                 console.log('Server is listening ' + server.info.uri.toLowerCase());
             })
-        })
-        .catch((e: Error) => {
-            console.error(e.message, e.stack)
-            process.exit(1)
+            return server
         })
 }
