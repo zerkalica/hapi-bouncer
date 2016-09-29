@@ -34,7 +34,7 @@ export default function createProxyHandler(
         throw new Error('Strategy is not set')
     }
 
-    debug('init %s to %s', from.hostname, to.hostname)
+    // debug('init %s to %s', from.hostname, to.hostname)
 
     function mapUri(request: HapiRequest, cb: H2O2MapUriCb): void {
         debug('mapUri %s to %s', from.hostname, to.hostname)

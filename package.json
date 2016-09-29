@@ -1,6 +1,6 @@
 {
   "name": "hapi-bouncer",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "hapi bouncer proxy",
   "repository": {
     "type": "git",
@@ -13,17 +13,20 @@
     "builddir": "dist"
   },
   "scripts": {
-    "prepublish": "conf/resources/prepublish.sh",
-    "preversion": "conf/resources/checkgit.sh && npm test && npm run build",
+    "prepublish": "npm run build",
+    "preversion": "npm test",
     "postversion": "git push && git push --tags",
-    "clean": "rm -rf $npm_package_config_builddir",
-    "ver": "conf/resources/gen-version.sh",
-    "build": "npm run clean && babel src --ignore=__tests__ --source-maps --out-dir $npm_package_config_builddir",
-    "build.babel": "npm run clean && babel src --source-maps --out-dir $npm_package_config_builddir",
+    "prepush": "npm test",
+    "update": "ncu -ua && npm install",
+    "clean": "rm -rf $npm_package_config_builddir/dist",
+    "build": "npm run clean && babel src --ignore=__tests__ --source-maps --out-dir $npm_package_config_builddir/dist",
+    "build.dep": "npm-helpers/build-deps.sh",
+    "build.dev": "npm run build -- --watch",
+    "lint": "eslint .",
     "check": "flow check",
     "testonly": "mocha",
-    "test": "mocha && flow check",
-    "test.dev": "npm run testonly -- --growl --watch"
+    "test": "flow check && mocha",
+    "test.dev": "mocha --growl --watch"
   },
   "keywords": [
     "web",
@@ -47,30 +50,30 @@
   "author": "Stefan Zerkalica <zerkalica@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "debug": "^2.2.0",
-    "yargs": "^5.0.0",
-    "node-config-loader": "^3.0.3",
+    "debug": "^2.6.0",
+    "yargs": "^6.6.0",
+    "node-config-loader": "^3.0.8",
     "find-root": "^1.0.0",
-    "h2o2": "^5.2.0",
-    "hapi": "^14.0.0 || ^15.1.1",
-    "inert": "^4.0.2",
-    "vision": "^4.1.0",
+    "h2o2": "^5.4.0",
+    "hapi": "^16.1.0",
+    "inert": "^4.1.0",
+    "vision": "^4.1.1",
     "wreck": "^10.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.16.0",
-    "babel-plugin-espower": "^2.3.1",
-    "babel-plugin-module-resolver": "^2.2.0",
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-plugin-espower": "^2.3.2",
+    "babel-plugin-module-resolver": "^2.5.0",
     "babel-plugin-syntax-decorators": "^6.13.0",
-    "babel-plugin-syntax-flow": "^6.13.0",
-    "babel-plugin-transform-flow-strip-types": "^6.14.0",
-    "babel-preset-es2015": "^6.16.0",
-    "babel-preset-es2015-loose": "^8.0.0",
-    "babel-preset-stage-0": "^6.16.0",
-    "glob": "^7.1.0",
-    "mocha": "^3.1.0",
-    "power-assert": "^1.4.1",
-    "sinon": "^1.17.6"
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "glob": "^7.1.1",
+    "husky": "^0.13.1",
+    "mocha": "^3.2.0",
+    "power-assert": "^1.4.2",
+    "sinon": "^1.17.7"
   }
 }

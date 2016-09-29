@@ -38,13 +38,16 @@ export interface RawConfig {
 }
 
 export interface NormalizedConnection {
-    port?: number;
-    tls?: TlsRec;
+    server: {
+        port: number;
+        tls: TlsRec;
+    };
+    links: Link[];
 }
+
 export interface NormalizedConfig {
     host?: string;
     connections: NormalizedConnection[];
-    links: Link[];
 }
 
 export interface ProxyHapiPluginOptions {

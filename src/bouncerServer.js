@@ -9,7 +9,7 @@ import {loadConfig} from 'node-config-loader'
 import createServer from './createServer'
 import normalizeConnections from './utils/normalizeConnections'
 import type {RawConfig, NormalizedConfig} from './interfaces/bouncer'
-import type {HapiServer} from './interfaces/hapi'
+import type {HapiServer, HapiConnection} from './interfaces/hapi'
 
 const debug = __debug('hapi-bouncer:debug')
 
@@ -53,13 +53,13 @@ export default function bouncerServer(args: BouncerServerConfig): Promise<HapiSe
     config.forEach(conf => configRoots.add(conf))
     debug('config dirs: %o', configRoots.roots)
 
-    return loadConfig({
+    return loadConfig(({
         mask: configRoots.roots,
-        env: process.env.NODE_ENV,
+        env: process.env.NODE_ENV || 'development',
         instance: 'server'
-    })
+    }))
         .then((conf: RawConfig) => {
-            debug('raw config: %s', JSON.stringify(conf, null, '  '))
+            // debug('raw config: %s', JSON.stringify(conf, null, '  '))
             const config: NormalizedConfig = normalizeConnections(
                 args.certs,
                 conf
@@ -70,7 +70,9 @@ export default function bouncerServer(args: BouncerServerConfig): Promise<HapiSe
                 if (err) {
                     throw err
                 }
-                console.log('Server is listening ' + server.info.uri.toLowerCase());
+                server.connections.forEach((connection) => {
+                    console.log('Server is listening ' + connection.info.uri.toLowerCase());
+                })
             })
             return server
         })

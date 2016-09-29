@@ -7,7 +7,7 @@ import {Server} from 'hapi'
 import Inert from 'inert'
 import h2o2 from 'h2o2'
 
-import type {HapiPlugin, HapiConnection} from 'hapi-bouncer/interfaces/hapi'
+import type {HapiPlugin, HapiServer, HapiConnection} from 'hapi-bouncer/interfaces/hapi'
 import type {NormalizedConfig, NormalizedConnection} from 'hapi-bouncer/interfaces/bouncer'
 import proxyHapiPlugin from './proxyHapiPlugin'
 
@@ -23,31 +23,38 @@ export const connectionDefaults = {
     }
 }
 
-export default function createServer({connections, host, links}: NormalizedConfig) {
-    const server = new Server({
+function showError(err: ?Error) {
+    if (err) {
+        console.error(err)
+        process.exit(1)
+    }
+}
+
+export default function createServer({connections, host, links}: NormalizedConfig): HapiServer {
+    const server: HapiServer = new Server({
         debug: {
             request: ['error']
         }
     })
-    connections.forEach((connection: NormalizedConnection) => {
-        server.connection({
+
+    server.register([Inert, h2o2], showError)
+
+    const conns: HapiConnection[] = connections.map((connection: NormalizedConnection) => {
+        const proxyHapiPluginWithOptions = {
+            register: proxyHapiPlugin,
+            options: {links: connection.links}
+        }
+
+        const conn: HapiConnection = server.connection({
             ...connectionDefaults,
             host,
-            ...connection
+            ...connection.server
         })
-    })
 
-    const proxyHapiPluginWithOptions = {
-        register: proxyHapiPlugin,
-        options: {links}
-    }
-    server.register([Inert, h2o2, proxyHapiPluginWithOptions], (err: ?Error) => {
-        if (err) {
-            console.error(err)
-            process.exit(1)
-        }
-    })
+        conn.register([proxyHapiPluginWithOptions], showError)
 
+        return conn
+    })
 
     return server
 }

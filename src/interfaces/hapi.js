@@ -92,5 +92,6 @@ export interface HapiConnection {
             credentials?: boolean;
             headers?: string[];
         }
-    }
+    };
+    register(plugins: any): void;
 }

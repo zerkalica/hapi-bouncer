@@ -56,7 +56,6 @@ export default function normalizeConnections(certDir: string, rc: RawConfig): No
         throw new Error('Need connection mappings in config')
     }
     const connMap: {[port: string]: NormalizedConnection} = {}
-    const links: Link[] = []
     for (let i = 0; i < rc.connections.length; i++) {
         const conn = rc.connections[i]
         const fromUrls: string[] = []
@@ -77,12 +76,14 @@ export default function normalizeConnections(certDir: string, rc: RawConfig): No
             const key: string = String(port)
             if (!connMap[key]) {
                 connMap[key] = {
-                    tls: from.protocol === 'https' ? tls : false,
-                    port
+                    server: {
+                        tls: from.protocol === 'https' ? tls : false,
+                        port,
+                    },
+                    links: []
                 }
             }
-
-            links.push({from, to})
+            connMap[key].links.push({from, to})
         }
     }
 
@@ -91,7 +92,6 @@ export default function normalizeConnections(certDir: string, rc: RawConfig): No
 
     return {
         host: rc.host || '0.0.0.0',
-        connections,
-        links
+        connections
     }
 }
