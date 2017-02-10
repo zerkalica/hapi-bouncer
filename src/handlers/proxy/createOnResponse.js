@@ -32,7 +32,7 @@ export default function createOnResponse(
                 return reply(err)
             }
             debugRes('%s', JSON.stringify({
-                href: request.url.href,
+                href: to.getHostUrl() + request.url.href,
                 payload: payload.toString().substring(0, 50),
                 statusCode: res.statusCode,
                 statusMessage: res.statusMessage,

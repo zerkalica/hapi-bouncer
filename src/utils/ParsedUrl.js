@@ -46,4 +46,18 @@ export default class ParsedUrl {
             this.hostname = hostname || ''
         }
     }
+
+    getHostUrl(): string {
+        const port = !this.port || this.port === 443 || this.port === 80
+            ? ''
+            : String(this.port)
+
+        let pth: string = this.path
+        const l = pth.length - 1
+        if (pth[l] === '/') {
+            pth = pth.substring(0, l)
+        }
+
+        return `${this.protocol}://${this.hostname}${port}${pth}`
+    }
 }

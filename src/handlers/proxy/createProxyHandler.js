@@ -56,7 +56,7 @@ export default function createProxyHandler(
         getPayload(request.payload)
             .then((payload) => {
                 const payloadRec: PayloadRec = {
-                    oldUrl: request.url.href,
+                    oldUrl: from.getHostUrl() + request.url.href,
                     newUrl: newUrl,
                     headers: newHeaders,
                     method: request.method,
