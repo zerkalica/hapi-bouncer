@@ -10,7 +10,7 @@
     "hapi-bouncer": "bin/hapi-bouncer"
   },
   "config": {
-    "builddir": "dist"
+    "builddir": "."
   },
   "scripts": {
     "prepublish": "npm run build",
