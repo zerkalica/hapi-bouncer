@@ -4,11 +4,23 @@ Transaprent proxy. Pipe raw http traffic from incoming http requests to remote e
 
 Proxy like [substack bouncy](https://github.com/substack/bouncy), but builded on top of [hapi](http://hapijs.com/).
 
-## Features
-
 * Supports https, and configurations via [node-config-loader](https://github.com/zerkalica/node-config-loader)
 * Can be used as hapi plugin.
 * Can log requests/responses and payloads.
+* Can partially substitute resources by path: you can mount many resources to one endpoint.
+
+Example:
+
+site1.com is localhost 127.0.0.1
+
+site2.com is external host.
+
+Requests (https or http):
+
+* site1.com proxyfied to http://localhost:8007
+* site1.com/rest proxyfied to https://localhost:8008/rest-some
+* site1.com/some proxyfied to http://site2.com/some
+* site1.com/cas proxyfied to http://localhost:8008/cas
 
 Install:
 
@@ -44,19 +56,19 @@ connections:
 
 connections:
     -
-        from: https://site1.com
+        from: https?://site1.com
         to: http://localhost:8007
     -
-        from: https://site1.com/rest
-        to: http://localhost:8008/rest
+        from: https?://site1.com/rest
+        to: http://localhost:8008/rest-some
     -
-        from: https://site1.com/some
+        from: https?://site1.com/some
         to: http://site2.com/some
     -
-        from: https://site1.com/sso
+        from: https?://site1.com/sso
         to: http://localhost:8008/sso
     -
-        from: https://site1.com/cas
+        from: https?://site1.com/cas
         to: http://localhost:8008/cas
 
 ```
@@ -76,6 +88,7 @@ ssl/server.crt
 ssl/server.key
 ssl/ca.crt
 ```
+
 
 ## Running as server:
 
