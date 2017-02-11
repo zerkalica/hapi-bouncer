@@ -18,12 +18,16 @@ npm i -g hapi-bouncer
 
 Configuration:
 
+All files placed in ./conf directory:
+
 ```yaml
-#conf/_base#default-server.yml
+#_base#default-server.yml
 
 host: 0.0.0.0
 __push__: [connections]
 ```
+
+If __push__ directive exists: concat connections data from all config files in ./conf directory.
 
 ```yaml
 # ex2#default-server.yml
@@ -66,6 +70,7 @@ site1.com 127.0.0.1
 
 SSL certificates:
 
+
 ```
 ssl/server.crt
 ssl/server.key
@@ -78,7 +83,7 @@ ssl/ca.crt
 hapi-bouncer --config=conf --certs=ssl --verbose
 ```
 
-## hapi plugin:
+## Hapi plugin
 
 ```js
 
