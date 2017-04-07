@@ -1,7 +1,7 @@
 // @flow
 
 import ParsedUrl from 'hapi-bouncer/utils/ParsedUrl'
-import type {HapiHandler} from './hapi'
+import type {HapiHandler, HapiRoutes} from './hapi'
 
 export interface PayloadRec {
     oldUrl: string;
@@ -33,6 +33,7 @@ export interface RawConnection {
 
 export interface RawConfig {
     host?: string;
+    routes?: HapiRoutes;
     tls: TlsRec;
     connections: RawConnection[];
 }
@@ -47,6 +48,7 @@ export interface NormalizedConnection {
 
 export interface NormalizedConfig {
     host?: string;
+    routes?: HapiRoutes;
     connections: NormalizedConnection[];
 }
 
