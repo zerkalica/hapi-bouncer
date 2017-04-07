@@ -92,6 +92,7 @@ export default function normalizeConnections(certDir: string, rc: RawConfig): No
 
     return {
         host: rc.host || '0.0.0.0',
+        routes: rc.routes || {},
         connections
     }
 }

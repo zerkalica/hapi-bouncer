@@ -83,15 +83,17 @@ export interface HapiRoute {
     handler: Object;
 }
 
+export interface HapiRoutes {
+    cors?: {
+        credentials?: boolean;
+        headers?: string[];
+    }
+}
+
 export interface HapiConnection {
     port: number;
     host: string;
     tls: string;
-    routes?: {
-        cors?: {
-            credentials?: boolean;
-            headers?: string[];
-        }
-    };
+    routes?: HapiRoutes;
     register(plugins: any): void;
 }

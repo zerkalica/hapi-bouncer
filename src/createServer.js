@@ -30,7 +30,7 @@ function showError(err: ?Error) {
     }
 }
 
-export default function createServer({connections, host, links}: NormalizedConfig): HapiServer {
+export default function createServer({connections, host, routes, links}: NormalizedConfig): HapiServer {
     const server: HapiServer = new Server({
         debug: {
             request: ['error']
@@ -48,6 +48,7 @@ export default function createServer({connections, host, links}: NormalizedConfi
         const conn: HapiConnection = server.connection({
             ...connectionDefaults,
             host,
+            routes,
             ...connection.server
         })
 
